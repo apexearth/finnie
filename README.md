@@ -19,7 +19,11 @@ bun install
 bun run dev      # the desktop app, live: page edits hot-reload, src-tauri edits rebuild and relaunch
 bun run web      # or just the page, in a browser at http://127.0.0.1:5178
 bun run bundle   # installer for this OS, in src-tauri/target/release/bundle
+bun run shortcut # Windows: a "Finnie (dev)" Start Menu entry that runs `bun run dev` with no console
 ```
+
+Pin the shortcut from Start (right-click → Pin to taskbar). Clicking it while Finnie is open
+brings the window forward; closing the window stops the dev servers. Output goes to `dev.log`.
 
 A macOS build has to be made on a Mac. Unsigned, it needs right-click → Open the first time.
 
