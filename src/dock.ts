@@ -19,6 +19,8 @@ export const finnieTheme: DockviewTheme = {
 
 let api: DockviewApi | null = null;
 export const getDockApi = () => api;
+/** The dock is gone (the page switched to the phone's shape). */
+export const dropDock = () => void (api = null);
 
 export function initDock(a: DockviewApi) {
   api = a;
@@ -73,6 +75,13 @@ export function resetLayout() {
 export function openSymbol(symbol: string, opts: { newChart?: boolean } = {}) {
   const a = api;
   const s = getState();
+  if (s.mobile) {
+    // One chart on a phone, shown in place of the list.
+    const id = s.activeChart ?? CHART_PREFIX + "main";
+    setChart(id, { symbol });
+    setState({ activeChart: id, view: "chart" });
+    return;
+  }
   const active = s.activeChart && a?.getPanel(s.activeChart) ? s.activeChart : a?.panels.find((p) => isChartPanel(p.id))?.id;
   if (!a) return;
   if (opts.newChart || !active) {

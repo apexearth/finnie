@@ -85,6 +85,8 @@ export function applyTheme() {
   for (const [k, val] of Object.entries(palette(current))) root.setProperty(k, val);
   root.colorScheme = isLight() ? "light" : "dark";
   document.documentElement.classList.toggle("light", isLight());
+  // A phone colours its status bar (and an installed app its title bar) with this.
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", palette(current)["--bg-2"] ?? "#161a21");
 }
 export function setTheme(patch: Partial<ThemeChoice>) {
   current = { ...current, ...patch };

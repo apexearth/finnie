@@ -255,3 +255,61 @@ html:not([data-platform="mac"]) ::-webkit-scrollbar-button { display: none; widt
 .crash { height: 100%; overflow: auto; padding: 24px 28px; }
 .crash h3 { margin: 0 0 8px; color: var(--down); font-size: 13px; }
 .crash pre { margin: 0 0 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-2); color: var(--fg-dim); font-size: 11px; white-space: pre-wrap; }
+
+/* The phone (Phone.tsx): one panel at a time, a bar of views under the thumb, sized for fingers.
+   Inputs are 16px so iOS does not zoom into them. */
+.modal-close { display: none; }
+.phone { height: 100dvh; padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left); background: var(--bg-2); }
+.phone, .phone * { -webkit-tap-highlight-color: transparent; }
+.phone button { touch-action: manipulation; }
+.phone input, .phone select { font-size: 16px; }
+.p-top { position: relative; flex: none; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 6px 0 12px; background: var(--bg-2); font-size: 12px; }
+.p-top > * { flex: none; white-space: nowrap; }
+.p-top .brand { font-weight: bold; font-size: 14px; }
+.p-top .market { overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; min-width: 0; }
+.p-top .topbar-btn { padding: 8px 10px; font-size: 13px; }
+.p-icon { display: inline-flex; align-items: center; }
+.p-top .pop { top: 44px; right: 6px; }
+.phone .tape { flex: none; display: flex; gap: 2px; overflow-x: auto; padding: 0 6px 6px; border-bottom: 1px solid var(--border); background: var(--bg-2); scrollbar-width: none; }
+.phone .tape::-webkit-scrollbar { display: none; }
+.phone .tape-item { flex: none; padding: 5px 8px; font-size: 12px; background: var(--bg); border: 1px solid var(--border); }
+.p-body { flex: 1; min-height: 0; position: relative; background: var(--bg); }
+.p-nav { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); background: var(--bg-2); padding-bottom: env(safe-area-inset-bottom); }
+.p-nav button { background: none; border: none; border-radius: 0; height: 50px; color: var(--fg-dim); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.p-nav button.on { color: var(--fg); box-shadow: inset 0 2px 0 var(--accent); }
+.phone .wl-head { padding: 8px; }
+.phone .wl-tab { padding: 6px 10px; font-size: 12px; }
+.phone .icon-btn { padding: 6px 10px; }
+.phone .wl-cols { grid-template-columns: 1fr 11ch 9ch; padding: 6px 12px; font-size: 11px; }
+.phone .wl-row { grid-template-columns: 1fr 11ch 9ch; height: 52px; padding: 0 12px 0 10px; }
+.phone .wl-row:hover { background: none; }
+.phone .wl-row.active { background: var(--bg-3); }
+.phone .wl-row .x { display: none; }
+.phone .wl-sym b { font-size: 15px; }
+.phone .wl-sym span { font-size: 11px; }
+.phone .wl-px { font-size: 14px; }
+.phone .wl-chg .pill { font-size: 13px; padding: 3px 5px; }
+.phone .wl-foot { padding: 8px 12px; font-size: 12px; }
+.phone .wl-foot button { font-size: 13px; padding: 7px 12px; }
+.phone .chart-bar { flex-wrap: wrap; height: auto; padding: 8px; gap: 8px; }
+.phone .chart-name { flex: 1 1 0; }
+.phone .seg button { line-height: 30px; padding: 0 8px; font-size: 12px; }
+.phone .chart-bar .icon-btn { line-height: 30px; padding: 0 8px; }
+.phone .legend { font-size: 10px; right: 64px; }
+.phone .wl-cols button { text-align: left; }
+.phone .details { padding: 14px; font-size: 13px; background: var(--bg); }
+.phone .details .big { font-size: 26px; }
+.phone .lists-in button { padding: 7px 12px; font-size: 12px; }
+.phone .perf div { padding: 6px 8px; }
+.phone .swatch { width: 28px; height: 28px; }
+.phone .theme-label { width: 14ch; }
+.phone .modal-bg { padding: env(safe-area-inset-top) 0 0; align-items: stretch; }
+.phone .modal { width: 100%; max-height: none; border: none; border-radius: 0; }
+.phone .modal h3 { display: flex; align-items: center; justify-content: space-between; padding: 6px 6px 6px 14px; font-size: 14px; }
+.phone .modal-close { display: inline-block; padding: 8px 12px; font-size: 13px; color: var(--accent); }
+.phone .modal .picker-input { padding: 10px; }
+.phone .modal .row { padding: 12px 14px; align-items: center; }
+.phone .modal .row b { width: 10ch; }
+.phone .modal .row .ex { display: none; }
+.phone .modal .row .add { padding: 6px 12px; font-size: 14px; }
+.phone .modal .foot { display: none; }

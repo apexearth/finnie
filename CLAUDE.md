@@ -9,6 +9,7 @@ indicators, a details panel. Tauri 2 shell around a React page; Henry's look (si
 - `PLAN.md` is what is ahead: open items and what is ruled out. Nothing finished lives there.
 - `docs/data.md` is where the numbers come from and how they stay fresh. Read it before touching `src/data`.
 - `docs/settings.md` is the settings file and the synced doc. Read it before touching `src/settings.ts`, `src/sync` or list edits in the store.
+- `docs/phone.md` is the phone: how it reaches a desktop, its settings, its layout.
 - `changelog/<YYYY-MM-DD>.md` is what shipped that day, one line per change.
 
 When work ships: delete its item from `PLAN.md`, add a line to today's changelog, and edit the

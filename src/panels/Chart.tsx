@@ -30,7 +30,8 @@ interface Built {
   paint: (d: ChartData, tx: (t: number) => number) => LegendLine[];
 }
 
-export function ChartPanel({ id, api }: { id: string; api: DockviewPanelApi }) {
+/** `api` is the dock panel's; a phone draws the chart with no dock around it. */
+export function ChartPanel({ id, api }: { id: string; api?: DockviewPanelApi }) {
   const stored = useStore((s) => s.charts[id]);
   const settings: ChartSettings = stored ?? defaultChart();
   const { symbol, range, style, indicators } = settings;
@@ -51,7 +52,7 @@ export function ChartPanel({ id, api }: { id: string; api: DockviewPanelApi }) {
   useEffect(() => {
     if (!stored) setChart(id, {});
   }, [id, stored]);
-  useEffect(() => api.setTitle(symbol), [api, symbol]);
+  useEffect(() => api?.setTitle(symbol), [api, symbol]);
 
   // Candles: the cached copy straight away, then the network, then again on the range's cadence.
   useEffect(() => {
@@ -167,7 +168,7 @@ export function ChartPanel({ id, api }: { id: string; api: DockviewPanelApi }) {
           <button className="icon-btn" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setMenu((m) => (m ? null : r)); }} title="indicators">indicators ▾</button>
           {menu && <IndicatorMenu id={id} indicators={indicators} anchor={menu} onClose={() => setMenu(null)} />}
         </span>
-        {chartCount > 1 && <button className="icon-btn" title="close this chart" onClick={() => api.close()}>×</button>}
+        {api && chartCount > 1 && <button className="icon-btn" title="close this chart" onClick={() => api.close()}>×</button>}
       </div>
       <div className="chart-body">
         <div className="chart-canvas" ref={host} />

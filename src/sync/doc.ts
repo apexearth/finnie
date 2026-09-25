@@ -31,6 +31,11 @@ export function merge(a: Doc, b: Doc): Doc {
   return out;
 }
 
+/** Whether `b` holds anything `a` does not (a merge of b into a would change a). */
+export function adds(a: Doc, b: Doc): boolean {
+  return Object.entries(b).some(([k, e]) => !a[k] || newer(e, a[k]!));
+}
+
 /** Write a key. The stamp never goes backwards for a key, even if this clock is behind another's. */
 export function put(doc: Doc, key: string, v: unknown, by: string, now = Date.now()): Doc {
   const prev = doc[key];

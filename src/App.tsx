@@ -1,64 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { refreshQuotes } from "./data/poll";
 import { RANGE_IDS } from "./data/ranges";
 import { openSymbol, resetLayout } from "./dock";
 import { FinnieMark } from "./FinnieMark";
-import * as f from "./fmt";
 import { Keys } from "./Keys";
 import { Layout } from "./Layout";
-import { span, usMarket } from "./market";
+import { Phone, usePhoneShape } from "./Phone";
 import { MOD, isMac } from "./platform";
 import { StatusBar } from "./StatusBar";
-import { REFRESH_CHOICES, TAPE, dayChange, getState, setChart, setState, sortedItems, useStore } from "./store";
+import { Conn, Market, Tape } from "./Glance";
+import { REFRESH_CHOICES, getState, setChart, setState, sortedItems, useStore } from "./store";
 import { SymbolSearch } from "./SymbolSearch";
 import { ThemeMenu } from "./ThemeMenu";
-
-
-function useNow(ms: number) {
-  const [now, setNow] = useState(Date.now());
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), ms);
-    return () => clearInterval(t);
-  }, [ms]);
-  return now;
-}
-
-function Market() {
-  const now = useNow(30_000);
-  const m = usMarket(new Date(now));
-  return (
-    <span className={"market" + (m.open ? " open" : "")} title="US stock market, regular hours (holidays not known)">
-      <span className="dot" />
-      {m.open ? `US open · closes in ${span(m.minutes)}` : `US closed · opens in ${span(m.minutes)}`}
-    </span>
-  );
-}
-
-function Tape() {
-  const quotes = useStore((s) => s.quotes);
-  return (
-    <div className="tape">
-      {TAPE.map((t) => {
-        const q = quotes[t.symbol], c = dayChange(q);
-        return (
-          <button key={t.symbol} className="tape-item num" onClick={() => openSymbol(t.symbol)} title={t.symbol}>
-            {t.label} <b>{f.quote(t.symbol, q?.price)}</b> <span className={f.tone(c?.pct)}>{f.move(t.symbol, c)}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function Conn() {
-  const y = useStore((s) => s.yahoo);
-  const refreshSec = useStore((s) => s.refreshSec);
-  const now = useNow(5_000);
-  const stale = y.state === "ok" && now - y.lastOk > refreshSec * 3000;
-  const cls = y.state === "error" ? "" : stale ? " stale" : y.state === "ok" ? " on" : " stale";
-  const title = y.state === "error" ? `data: ${y.error}` : y.lastOk ? `data updated ${f.ago(y.lastOk, now)}` : "connecting";
-  return <span className={"conn" + cls} title={title}>●</span>;
-}
 
 function RefreshPick() {
   const refreshSec = useStore((s) => s.refreshSec);
@@ -72,7 +25,15 @@ function RefreshPick() {
 
 const typing = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName));
 
+/** The desk's shape or the phone's, by the screen; `?mobile=1` / `?desktop=1` force one. */
 export function App() {
+  const phone = usePhoneShape();
+  // Before anything can be tapped, so openSymbol knows which shape it is serving.
+  useLayoutEffect(() => setState({ mobile: phone }), [phone]);
+  return phone ? <Phone /> : <Desk />;
+}
+
+function Desk() {
   const search = useStore((s) => s.search);
   const keys = useStore((s) => s.keys);
 

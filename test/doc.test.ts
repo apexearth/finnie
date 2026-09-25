@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { itemKey, listKey, listsFrom, merge, posAt, put, seedDefaults, type Doc } from "../src/sync/doc";
+import { adds, itemKey, listKey, listsFrom, merge, posAt, put, seedDefaults, type Doc } from "../src/sync/doc";
 
 const lists = [
   { id: "a", name: "A", items: [{ symbol: "X" }, { symbol: "Y" }] },
@@ -54,4 +54,12 @@ describe("sync doc", () => {
     d = put(d, itemKey("a", "P"), { pos: posAt(d, others2, 2) }, "x", 2);
     expect(listsFrom(d)[0]!.items.map((i) => i.symbol)).toEqual(["R", "Q", "P"]);
   });
+});
+
+test("adds says whether a merge would change a doc", () => {
+  const a = put({}, "list:x", { name: "X", pos: 0 }, "d1", 10);
+  const b = put(a, "item:x:SPY", { pos: 0 }, "d2", 20);
+  expect(adds(a, b)).toBe(true);
+  expect(adds(b, a)).toBe(false);
+  expect(adds(b, merge(a, b))).toBe(false);
 });

@@ -25,6 +25,13 @@ bun run shortcut # Windows: a "Finnie (dev)" Start Menu entry that runs `bun run
 Pin the shortcut from Start (right-click → Pin to taskbar). Clicking it while Finnie is open
 brings the window forward; closing the window stops the dev servers. Output goes to `dev.log`.
 
+## On your phone
+
+While `bun run dev` (or `bun run web`) is running, the page is served on your Tailscale
+address too: open `http://<this machine's tailnet IP>:5178` on a phone in your tailnet. It
+draws a phone layout, shares this machine's lists, and fetches through it. Add it to your home
+screen to run it full-screen. Other networks are refused. See `docs/phone.md`.
+
 A macOS build has to be made on a Mac. Unsigned, it needs right-click → Open the first time.
 
 ## Keys

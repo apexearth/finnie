@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react";
 import type { RangeId } from "./data/ranges";
 import type { Quote } from "./data/types";
 import { DEFAULT_NAMES } from "./defaults";
-import { onSaveResult, saveDevice, saveDoc, settings, type SettingsFile } from "./settings";
+import { onDocChanged, onSaveResult, saveDevice, saveDoc, settings, type SettingsFile } from "./settings";
 import { itemKey, listKey, listsFrom, nameKey, namesFrom, posAt, put, type Doc } from "./sync/doc";
 
 export interface WatchItem {
@@ -53,6 +53,9 @@ export interface State {
   live: { connected: boolean; symbols: string[] };
   /** The last failed write of the settings file, shown until one succeeds. */
   saveError: string | null;
+  /** Drawn in the phone's shape (Phone.tsx): one panel at a time, picked by `view`. */
+  mobile: boolean;
+  view: "list" | "chart" | "details";
 }
 
 export const REFRESH_CHOICES = [30, 60, 120, 300, 600];
@@ -98,6 +101,8 @@ let state: State = {
   yahoo: { state: "idle", lastOk: 0 },
   live: { connected: false, symbols: [] },
   saveError: null,
+  mobile: false,
+  view: "list",
 };
 
 /** Fills the state from the settings file; main.tsx calls it before the first render. */
@@ -115,12 +120,17 @@ export function initStore(f: SettingsFile) {
     refreshSec: d.refreshSec ?? 60,
   };
   onSaveResult((error) => error !== state.saveError && setState({ saveError: error }));
+  onDocChanged(showDoc);
 }
 
-/** A new doc, from an edit here or (later) a merge with another machine. */
+/** A new doc from an edit here: saved, then drawn. */
 export function commitDoc(next: Doc) {
+  saveDoc(next);
+  showDoc(next);
+}
+/** Draws a doc; on its own, for one that took in another page's edits and is already saved. */
+function showDoc(next: Doc) {
   doc = next;
-  saveDoc(doc);
   setState((s) => {
     const lists = listsFrom(doc);
     return { lists, names: namesOf(doc), listId: lists.some((l) => l.id === s.listId) ? s.listId : (lists[0]?.id ?? "") };

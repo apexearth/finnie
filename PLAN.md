@@ -4,14 +4,16 @@ Ideas to pick from as it gets used. Nothing here is promised.
 
 ## Next: your lists on every device
 
-The settings file and its mergeable doc are done (`docs/settings.md`). What is left:
+The settings file, its mergeable doc, and the phone (served by a desktop's dev server over
+Tailscale, `docs/phone.md`) are done. What is left:
 
-1. **Sync between desktops over Tailscale.** Each Finnie listens on its tailnet address only,
-   serving one exchange: send your doc, get theirs, both `merge`. Paired once with a one-time
-   code (Henry's idea, not its handshake: the tailnet already encrypts, and a watchlist is not
-   a terminal). Exchange on every edit, on reconnect, and every few minutes.
-2. **The phone** opens the page from that same listener over Tailscale, in a phone layout,
-   and fetches quotes through that desktop. It keeps nothing of its own, so it needs no sync.
+- **Sync between desktops over Tailscale.** Each Finnie listens on its tailnet address only,
+  serving one exchange: send your doc, get theirs, both `merge`. Paired once with a one-time
+  code (Henry's idea, not its handshake: the tailnet already encrypts, and a watchlist is not
+  a terminal). Exchange on every edit, on reconnect, and every few minutes.
+- **The phone from an installed build.** Today only `bun run dev` serves it; a bundled
+  Finnie has no server. The listener above would serve the page too.
+- **Phone gestures**: drag to reorder rows and rename a list by double-tap are desk-only.
 
 ## Likely next
 

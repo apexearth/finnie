@@ -58,7 +58,10 @@ export function SymbolSearch({ mode }: { mode: "open" | "add" | "new" }) {
   return (
     <div className="modal-bg" onMouseDown={(e) => e.target === e.currentTarget && close()}>
       <div className="modal">
-        <h3>{mode === "add" ? `Add to ${list.name}` : mode === "new" ? "Open in a new chart" : "Go to symbol"}</h3>
+        <h3>
+          {mode === "add" ? `Add to ${list.name}` : mode === "new" ? "Open in a new chart" : "Go to symbol"}
+          <button className="icon-btn modal-close" onClick={close}>{mode === "add" ? "done" : "close"}</button>
+        </h3>
         <input className="picker-input" autoFocus placeholder="ticker or name: AAPL, bitcoin, s&p 500…" value={q}
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {

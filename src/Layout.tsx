@@ -2,7 +2,8 @@ import { DockviewReact, type DockviewReadyEvent, type IDockviewPanelProps } from
 import { ChartPanel } from "./panels/Chart";
 import { Details } from "./panels/Details";
 import { Watchlist } from "./panels/Watchlist";
-import { finnieTheme, initDock } from "./dock";
+import { useEffect } from "react";
+import { dropDock, finnieTheme, initDock } from "./dock";
 
 const components = {
   watchlist: () => <Watchlist />,
@@ -16,6 +17,7 @@ function Watermark() {
 
 export function Layout() {
   const onReady = (e: DockviewReadyEvent) => initDock(e.api);
+  useEffect(() => dropDock, []);
   return (
     <div className="dock">
       <DockviewReact theme={finnieTheme} components={components} watermarkComponent={Watermark} onReady={onReady} />
