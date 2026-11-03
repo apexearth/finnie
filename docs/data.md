@@ -40,8 +40,10 @@ back to Coinbase candles (at most 300, so long averages may not warm up) and say
 
 ## Time
 
-Intraday candles are shown in local time. Daily and longer candles are dated in the exchange's
-time zone, so a crypto daily bar never slides onto the previous day.
+Intraday candles are shown in local time. When the clocks go back, that hour repeats, and the
+repeated candles are drawn after the first pass with the last label before it (the chart needs
+its times to keep rising). Daily and longer candles are dated in the exchange's time zone, so a
+crypto daily bar never slides onto the previous day.
 
 Every range fetches more history than it shows (1Y fetches 2y), so a 200-bar average is already
 drawn at the left edge.

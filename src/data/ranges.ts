@@ -44,3 +44,22 @@ export function viewStart(r: RangeId, times: number[], crypto: boolean, now = Da
   }
   return first;
 }
+
+/**
+ * The chart's time keys for bar times: intraday bars in your local clock, daily and longer as the
+ * exchange dates them. The chart wants them strictly rising, and local time is not: when the
+ * clocks go back an hour it repeats, so the repeated bars get keys a second apart after the last
+ * one before the change.
+ */
+export function axisTimes(times: number[], intraday: boolean, gmtoffset: number): number[] {
+  const out: number[] = [];
+  for (const t of times) {
+    const x = axisTime(t, intraday, gmtoffset), prev = out[out.length - 1];
+    out.push(prev != null && x <= prev ? prev + 1 : x);
+  }
+  return out;
+}
+
+export function axisTime(t: number, intraday: boolean, gmtoffset: number): number {
+  return intraday ? t - new Date(t * 1000).getTimezoneOffset() * 60 : Math.floor((t + gmtoffset) / 86400) * 86400;
+}

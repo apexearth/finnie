@@ -9,7 +9,7 @@ import {
 } from "lightweight-charts";
 import { cachedChart, loadChart } from "../data/charts";
 import { onTick } from "../data/poll";
-import { RANGE_IDS, RANGES, isIntraday, viewStart, type RangeId } from "../data/ranges";
+import { RANGE_IDS, RANGES, axisTime, axisTimes, isIntraday, viewStart, type RangeId } from "../data/ranges";
 import { isCrypto, type ChartData } from "../data/types";
 import { getDockApi, isChartPanel } from "../dock";
 import * as f from "../fmt";
@@ -26,8 +26,8 @@ interface LegendLine {
 interface Built {
   chart: IChartApi;
   main: ISeriesApi<SeriesType>;
-  /** Fills each series from the bars; returns the legend lines. */
-  paint: (d: ChartData, tx: (t: number) => number) => LegendLine[];
+  /** Fills each series from the bars at the given time keys; returns the legend lines. */
+  paint: (d: ChartData, times: number[]) => LegendLine[];
 }
 
 /** `api` is the dock panel's; a phone draws the chart with no dock around it. */
@@ -106,17 +106,13 @@ export function ChartPanel({ id, api }: { id: string; api?: DockviewPanelApi }) 
     const b = built.current;
     if (!b || !data || !data.bars.length) return;
     const off = data.meta.gmtoffset;
-    // Intraday bars show in your local time; daily and longer are dated as the exchange dates them.
-    const tx = intraday
-      ? (t: number) => t - new Date(t * 1000).getTimezoneOffset() * 60
-      : (t: number) => Math.floor((t + off) / 86400) * 86400;
-    setLines(b.paint(data, tx));
-    const ts = data.bars.map((x) => tx(x.time));
+    const ts = axisTimes(data.bars.map((x) => x.time), intraday, off);
+    setLines(b.paint(data, ts));
     times.current = ts;
     const key = `${symbol}:${range}:${shape}`;
     if (fitted.current !== key) {
       fitted.current = key;
-      const from = tx(viewStart(range, data.bars.map((x) => x.time), isCrypto(symbol)));
+      const from = axisTime(viewStart(range, data.bars.map((x) => x.time), isCrypto(symbol)), intraday, off);
       b.chart.timeScale().setVisibleRange({ from: from as UTCTimestamp, to: ts[ts.length - 1] as UTCTimestamp });
     }
   }, [data, shape]);
@@ -288,8 +284,8 @@ function build(el: HTMLElement, style: ChartSettings["style"], indicators: Indic
   return {
     chart,
     main,
-    paint(d, tx) {
-      const times = d.bars.map((b) => tx(b.time) as Time);
+    paint(d, keys) {
+      const times = keys as Time[];
       const closes = d.bars.map((b) => b.close);
       const last = closes[closes.length - 1] ?? 1;
       const precision = f.decimals(last, d.meta.symbol);
